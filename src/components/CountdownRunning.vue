@@ -1,8 +1,8 @@
 <template>
     <div class="screen">
         <div class="time">00:<span class="time-lower">00</span></div>
-        <div class="time-control-btn" @click="$emit('to-pause')">
-            <img src="../assets/pause.svg" alt="pause">
+        <div class="time-control-btn">
+            <img src="../assets/pause.svg" alt="pause" @click="$emit('to-pause')">
         </div>
     </div>
 </template>

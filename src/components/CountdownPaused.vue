@@ -1,8 +1,8 @@
 <template>
     <div class="screen">
         <div class="time">00:<span class="time-lower">00</span><span class="time-extra">sec</span></div>
-        <div class="time-control-btn" @click="$emit('to-resume')">
-            <img src="../assets/resume.svg" alt="resume">
+        <div class="time-control-btn">
+            <img src="../assets/resume.svg" alt="resume" @click="$emit('to-resume')">
         </div>
         <div class="btn" @click="$emit('to-stop')">
             stop
