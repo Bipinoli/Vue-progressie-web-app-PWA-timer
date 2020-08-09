@@ -57,9 +57,11 @@ export default {
 
     input:focus {
         outline: none;
+        -moz-focus-inner {border:0;}
     }
 
     input {
+        -moz-appearance: textfield;
         text-align: center;
         border: none;
         font-family: 'Montserrat', sans-serif;
