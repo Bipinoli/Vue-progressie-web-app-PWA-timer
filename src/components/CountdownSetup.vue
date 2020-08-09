@@ -8,7 +8,7 @@
                 <div class="choice">00 sec</div>
             </div>
         </div>
-        <div class="time-control-btn">
+        <div class="time-control-btn" @click="toRunning">
             <img src="../assets/resume.svg" alt="resume">
         </div>
     </div>
@@ -18,7 +18,11 @@
 <script>
 export default {
     name: 'CountdownSetup',
-
+    methods: {
+        toRunning() {
+            this.$emit('to-running');
+        }
+    }
 }
 </script>
 

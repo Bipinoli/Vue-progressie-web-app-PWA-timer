@@ -1,27 +1,58 @@
 <template>
   <div id="app">
     <div class="main">
-      <!-- <CountdownPaused></CountdownPaused> -->
-      <!-- <Default></Default> -->
-      <!-- <CountdownSetup></CountdownSetup> -->
-      <CountdownRunning></CountdownRunning>
+      <Default v-show="showDefaultScreen" @to-setup="toSetup"></Default>
+      <CountdownSetup v-show="showSetupScreen" @to-running="toRunning"></CountdownSetup>
+      <CountdownRunning v-show="showRunningScreen" @to-pause="toPause"></CountdownRunning>
+      <CountdownPaused v-show="showPauseScreen" @to-stop="toDefault" @to-resume="toResume"></CountdownPaused>
     </div>
   </div>
 </template>
 
+
 <script>
-// import CountdownPaused from './components/CountdownPaused.vue'
-// import Default from './components/Default.vue'
-// import CountdownSetup from './components/CountdownSetup.vue'
+import CountdownPaused from './components/CountdownPaused.vue'
+import Default from './components/Default.vue'
+import CountdownSetup from './components/CountdownSetup.vue'
 import CountdownRunning from './components/CountdownRunning.vue'
 
 export default {
   name: 'App',
   components: {
-    // CountdownPaused,
-    // Default,
-    // CountdownSetup,
+    CountdownPaused,
+    Default,
+    CountdownSetup,
     CountdownRunning
+  },
+  data() {
+    return {
+      showDefaultScreen: true,
+      showPauseScreen: false,
+      showRunningScreen: false,
+      showSetupScreen: false,
+    };
+  },
+  methods: {
+    toSetup() {
+      this.showDefaultScreen = false;
+      this.showSetupScreen = true;
+    },
+    toRunning() {
+      this.showSetupScreen = false;
+      this.showRunningScreen = true;
+    },
+    toPause() {
+      this.showRunningScreen = false;
+      this.showPauseScreen = true;
+    },
+    toResume() {
+      this.showPauseScreen = false;
+      this.showRunningScreen = true;
+    },
+    toDefault() {
+      this.showPauseScreen = false;
+      this.showDefaultScreen = true;
+    }
   }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
     <div class="screen">
         <div class="time">00:<span class="time-lower">00</span></div>
-        <div class="btn">NEW</div>
+        <div class="btn" @click="$emit('to-setup')">NEW</div>
     </div>
 </template>
 
@@ -9,7 +9,6 @@
 <script>
 export default {
     name: 'Default',
-
 }
 </script>
 
