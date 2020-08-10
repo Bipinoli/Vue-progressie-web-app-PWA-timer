@@ -1,16 +1,17 @@
 <template>
     <div class="screen">
-        <div class="time">00:<span class="time-lower">00</span></div>
+        <div class="time">{{timeHi}}:<span class="time-lower">{{timeLo}}</span></div>
+        <div class="time-label">{{hiLabel}} {{loLabel}}</div>
         <div class="countdown-setup">
             <div class="choice">
-                <input type="number" class="min-input" placeholder="minutes" v-model='minutes'>
+                <input type="number" class="min-input" placeholder="minutes" v-model='min'>
             </div>
             <div class="row">
                 <div class="choice">
-                    <input type="number" placeholder="hr" v-model='hours'>
+                    <input type="number" placeholder="hr" v-model='hr'>
                 </div>
                 <div class="choice">
-                    <input type="number" placeholder="sec" v-model='seconds'>
+                    <input type="number" placeholder="sec" v-model='sec'>
                 </div>
             </div>
         </div>
@@ -30,34 +31,18 @@ export default {
     data: function() {
         return timeFactory();
     },
-    computed: {
-        minutes: {
-            get: function() {
-                return this.min;
-            },
-            set: function(val) {
-                this.min = val;
-            }
+    watch: {
+        min: function(val) {
+            this.min = bound(val, 0, 59);
+            this.adjustDisplayTime();
         },
-        hours: {
-            get: function() {
-                return this.hr;
-            },
-            set: function(val) {
-                if (val == '') return;
-                val = parseInt(val);
-                if (val < 0) val = 0;
-                if (val > 12) val = 12;
-                this.hr = '' + val;
-            }
+        hr: function(val) {
+            this.hr = bound(val, 0, 12);
+            this.adjustDisplayTime();
         },
-        seconds: {
-            get: function() {
-                return this.sec;
-            },
-            set: function(val) {
-                this.sec = val;
-            }
+        sec: function(val) {
+            this.sec = bound(val, 0, 59);
+            this.adjustDisplayTime();
         }
     },
     methods: {
@@ -69,6 +54,34 @@ export default {
             });
             Object.assign(this.$data, timeFactory());
         },
+        adjustDisplayTime() {
+            if (this.hr == '' && this.min == '' && this.sec == '') {
+                Object.assign(this.$data, timeFactory());
+                return;
+            }
+            this.hr = this.hr == '' ? '00' : this.hr;
+            this.sec = this.sec == '' ? '00' : this.sec;
+            this.min = this.min == '' ? '00' : this.min;
+
+            if (parseInt(this.hr) > 0) {
+                // hr, min focused display
+                this.timeHi = this.hr;
+                this.timeLo = this.min;
+                this.hiLabel = 'hr';
+                this.loLabel = 'min';
+            }
+            else {
+                // min, sec focused display
+                this.timeHi = this.min;
+                this.timeLo = this.sec; 
+                this.hiLabel = 'min';
+                this.loLabel = 'sec';
+            }
+
+            this.hr = this.hr == '00' ? '' : this.hr;
+            this.sec = this.sec == '00' ? '' : this.sec;
+            this.min = this.min == '00' ? '' : this.min;
+        }
     },
 }
 
@@ -78,7 +91,19 @@ function timeFactory() {
             min: '',
             hr: '',
             sec: '',
+            timeHi: '00',
+            timeLo: '00',
+            hiLabel: '',
+            loLabel: '',
         };
+}
+
+function bound(val, lo, hi) {
+    if (val == '') return val;
+    val = parseInt(val);
+    if (val < lo) val = lo;
+    if (val > hi) val = hi;
+    return '' + val;
 }
 
 </script>
@@ -89,7 +114,13 @@ function timeFactory() {
 <style scoped>
     .time {
         font-size: 48px;
-        margin-bottom: 1.2em;
+    }
+
+    .time-label {
+        text-align: center;
+        margin-bottom: 4rem;
+        font-size: 1.2rem;
+        font-weight: 300;
     }
 
     .choice {
