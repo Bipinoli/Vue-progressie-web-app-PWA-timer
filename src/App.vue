@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="main">
-      <Default v-if="showDefaultScreen" @to-setup="toSetup"></Default>
+      <Default v-if="showDefaultScreen" @to-setup="toSetup" @stop-vibration="stopVibration" :isFinishing="countDownFinished"></Default>
       <CountdownSetup v-if="showSetupScreen" @to-running="toRunning"></CountdownSetup>
       <CountdownRunning v-if="showRunningScreen" @to-pause="toPause" @time-up="timeUp" :hr="hr" :min="min" :sec="sec"></CountdownRunning>
       <CountdownPaused v-if="showPauseScreen" @to-stop="toDefault" @to-resume="toResume" :hr="hr" :min="min" :sec="sec"></CountdownPaused>
@@ -36,6 +36,9 @@ export default {
       'sec': 0,
 
       'paused': false,
+      'countDownFinished': false,
+
+      'vibrator': null,
     };
   },
   created: function() {
@@ -54,8 +57,24 @@ export default {
   methods: {
     timeUp() {
       this.showRunningScreen = false;
+      this.countDownFinished = true;
       this.toDefault();
-      alert("time up!!");
+      let isMobile = (/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent);
+      if (isMobile) {
+        this.vibrator = setInterval(() => {
+          navigator.vibrate(500);
+        }, 750);
+      }
+      else {
+        alert("Time UP! \nI couldn't notify u with vibration.");
+      }
+    },
+    stopVibration() {
+      let isMobile = (/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent);
+      if (isMobile) {
+        clearInterval(this.vibrator);
+      }
+      this.countDownFinished = false;
     },
     toSetup() {
       this.showDefaultScreen = false;

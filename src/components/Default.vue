@@ -1,7 +1,8 @@
 <template>
     <div class="screen">
         <div class="time">00:<span class="time-lower">00</span></div>
-        <div class="btn" @click="$emit('to-setup')">NEW</div>
+        <div class="btn" v-if="isFinishing" @click="btnClicked">DONE</div>
+        <div class="btn" v-else @click="btnClicked">NEW</div>
     </div>
 </template>
 
@@ -9,6 +10,16 @@
 <script>
 export default {
     name: 'Default',
+    props: ['isFinishing'],
+    methods: {
+        btnClicked() {
+            if (this.isFinishing) {
+                this.$emit('stop-vibration');
+                return;
+            }
+            this.$emit('to-setup');
+        },
+    }
 }
 </script>
 
