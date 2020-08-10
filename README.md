@@ -1,24 +1,7 @@
-# countdown_pwa
+# Countdown App
 
-## Project setup
-```
-npm install
-```
+### It is a Progressive Web App (PWA)
+##### It can be installed in your device like an app
+#### Live at: https://shorturl.at/qrCV6
+#### alternate url: https://vigorous-leavitt-546826.netlify.app/
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
