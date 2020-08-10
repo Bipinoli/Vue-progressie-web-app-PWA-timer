@@ -1,10 +1,10 @@
 <template>
   <div id="app">
     <div class="main">
-      <Default v-show="showDefaultScreen" @to-setup="toSetup"></Default>
-      <CountdownSetup v-show="showSetupScreen" @to-running="toRunning"></CountdownSetup>
-      <CountdownRunning v-show="showRunningScreen" @to-pause="toPause"></CountdownRunning>
-      <CountdownPaused v-show="showPauseScreen" @to-stop="toDefault" @to-resume="toResume"></CountdownPaused>
+      <Default v-if="showDefaultScreen" @to-setup="toSetup" @stop-vibration="stopVibration" :isFinishing="countDownFinished"></Default>
+      <CountdownSetup v-if="showSetupScreen" @to-running="toRunning"></CountdownSetup>
+      <CountdownRunning v-if="showRunningScreen" @to-pause="toPause" @time-up="timeUp" :hr="hr" :min="min" :sec="sec"></CountdownRunning>
+      <CountdownPaused v-if="showPauseScreen" @to-stop="toDefault" @to-resume="toResume" :hr="hr" :min="min" :sec="sec"></CountdownPaused>
     </div>
   </div>
 </template>
@@ -33,10 +33,49 @@ export default {
 
       'hr': 0,
       'min': 0,
-      'sec': 0
+      'sec': 0,
+
+      'paused': false,
+      'countDownFinished': false,
+
+      'vibrator': null,
     };
   },
+  created: function() {
+    setInterval(() => {
+      if (this.paused) return;
+      let seconds = this.hr * 60 * 60 + this.min * 60 + this.sec;
+      if (seconds == 0) return;
+      seconds -= 1;
+      this.hr = Math.floor(seconds/(60*60));
+      seconds -= this.hr * 60 * 60;
+      this.min = Math.floor(seconds/60);
+      seconds -= this.min * 60;
+      this.sec = seconds; 
+    }, 1000);
+  },
   methods: {
+    timeUp() {
+      this.showRunningScreen = false;
+      this.countDownFinished = true;
+      this.toDefault();
+      let isMobile = (/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent);
+      if (isMobile) {
+        this.vibrator = setInterval(() => {
+          navigator.vibrate(500);
+        }, 750);
+      }
+      else {
+        alert("Time UP! \nI couldn't notify u with vibration.");
+      }
+    },
+    stopVibration() {
+      let isMobile = (/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent);
+      if (isMobile) {
+        clearInterval(this.vibrator);
+      }
+      this.countDownFinished = false;
+    },
     toSetup() {
       this.showDefaultScreen = false;
       this.showSetupScreen = true;
@@ -52,17 +91,25 @@ export default {
     toPause() {
       this.showRunningScreen = false;
       this.showPauseScreen = true;
+      this.paused = true;
     },
     toResume() {
       this.showPauseScreen = false;
       this.showRunningScreen = true;
+      this.paused = false;
     },
     toDefault() {
       this.showPauseScreen = false;
       this.showDefaultScreen = true;
+      this.paused = false;
+      this.hr = 0;
+      this.min = 0;
+      this.sec = 0;
     }
   }
 }
+
+
 </script>
 
 
@@ -112,6 +159,13 @@ img {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.time-label {
+    text-align: center;
+    margin-bottom: 4rem;
+    font-size: 1.2rem;
+    font-weight: 300;
 }
 
 </style>
