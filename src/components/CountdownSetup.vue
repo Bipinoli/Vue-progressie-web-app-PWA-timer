@@ -3,14 +3,14 @@
         <div class="time">00:<span class="time-lower">00</span></div>
         <div class="countdown-setup">
             <div class="choice">
-                <input type="number" class="min-input" name="" id="" :placeholder="min + ' minutes'">
+                <input type="number" class="min-input" placeholder="minutes" v-model='minutes'>
             </div>
             <div class="row">
                 <div class="choice">
-                    <input type="number" name="" id="" :placeholder="hr + ' hr'">
+                    <input type="number" placeholder="hr" v-model='hours'>
                 </div>
                 <div class="choice">
-                    <input type="number" name="" id="" :placeholder="sec + ' sec'">
+                    <input type="number" placeholder="sec" v-model='seconds'>
                 </div>
             </div>
         </div>
@@ -21,23 +21,69 @@
 </template>
 
 
+
+
 <script>
+
 export default {
     name: 'CountdownSetup',
-    methods: {
-        toRunning() {
-            this.$emit('to-running');
+    data: function() {
+        return timeFactory();
+    },
+    computed: {
+        minutes: {
+            get: function() {
+                return this.min;
+            },
+            set: function(val) {
+                this.min = val;
+            }
+        },
+        hours: {
+            get: function() {
+                return this.hr;
+            },
+            set: function(val) {
+                if (val == '') return;
+                val = parseInt(val);
+                if (val < 0) val = 0;
+                if (val > 12) val = 12;
+                this.hr = '' + val;
+            }
+        },
+        seconds: {
+            get: function() {
+                return this.sec;
+            },
+            set: function(val) {
+                this.sec = val;
+            }
         }
     },
-    data() {
-        return {
-            min: '00',
-            hr: '00',
-            sec: '00',
-        }
-    }
+    methods: {
+        toRunning() {
+            this.$emit('to-running', {
+                'hr': this.hr == '' ?  0 : parseInt(this.hr),
+                'min': this.min == '' ? 0 : parseInt(this.min),
+                'sec': this.sec == '' ? 0 : parseInt(this.sec)
+            });
+            Object.assign(this.$data, timeFactory());
+        },
+    },
 }
+
+
+function timeFactory() {
+    return {
+            min: '',
+            hr: '',
+            sec: '',
+        };
+}
+
 </script>
+
+
 
 
 <style scoped>
@@ -57,7 +103,6 @@ export default {
 
     input:focus {
         outline: none;
-        -moz-focus-inner {border:0;}
     }
 
     input {

@@ -30,6 +30,10 @@ export default {
       showPauseScreen: false,
       showRunningScreen: false,
       showSetupScreen: false,
+
+      'hr': 0,
+      'min': 0,
+      'sec': 0
     };
   },
   methods: {
@@ -37,9 +41,13 @@ export default {
       this.showDefaultScreen = false;
       this.showSetupScreen = true;
     },
-    toRunning() {
+    toRunning(setup) {
       this.showSetupScreen = false;
       this.showRunningScreen = true;
+
+      this.hr = setup.hr;
+      this.min = setup.min;
+      this.sec = setup.sec;
     },
     toPause() {
       this.showRunningScreen = false;
