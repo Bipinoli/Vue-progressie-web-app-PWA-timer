@@ -116,13 +116,6 @@ function bound(val, lo, hi) {
         font-size: 48px;
     }
 
-    .time-label {
-        text-align: center;
-        margin-bottom: 4rem;
-        font-size: 1.2rem;
-        font-weight: 300;
-    }
-
     .choice {
         padding: 10px 22px 10px 22px;
         border: 1.1px solid #082D0F;

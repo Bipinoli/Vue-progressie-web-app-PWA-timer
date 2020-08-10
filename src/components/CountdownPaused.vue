@@ -1,6 +1,7 @@
 <template>
     <div class="screen">
-        <div class="time">00:<span class="time-lower">00</span><span class="time-extra">sec</span></div>
+        <div class="time">00:<span class="time-lower">00</span></div>
+        <div class="time-label">{{hiLabel}} {{loLabel}}</div>
         <div class="time-control-btn">
             <img src="../assets/resume.svg" alt="resume" @click="$emit('to-resume')">
         </div>
@@ -15,6 +16,12 @@
 <script>
 export default {
     name: 'CountdownPaused',
+    data: function() {
+        return {
+            hiLabel: 'min',
+            loLabel: 'sec',
+        };
+    }
 };
 </script>
 
@@ -28,13 +35,7 @@ export default {
     }
 
     .time {
-        padding-left: 0.8em;
         font-size: 72px;
-    }
-
-    .time-extra {
-        font-size: 36px;
-        color: #F96E46;
     }
 
     .btn {

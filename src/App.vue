@@ -1,10 +1,10 @@
 <template>
   <div id="app">
     <div class="main">
-      <Default v-show="showDefaultScreen" @to-setup="toSetup"></Default>
-      <CountdownSetup v-show="showSetupScreen" @to-running="toRunning"></CountdownSetup>
-      <CountdownRunning v-show="showRunningScreen" @to-pause="toPause"></CountdownRunning>
-      <CountdownPaused v-show="showPauseScreen" @to-stop="toDefault" @to-resume="toResume"></CountdownPaused>
+      <Default v-if="showDefaultScreen" @to-setup="toSetup"></Default>
+      <CountdownSetup v-if="showSetupScreen" @to-running="toRunning"></CountdownSetup>
+      <CountdownRunning v-if="showRunningScreen" @to-pause="toPause" :hr="hr" :min="min" :sec="sec"></CountdownRunning>
+      <CountdownPaused v-if="showPauseScreen" @to-stop="toDefault" @to-resume="toResume"></CountdownPaused>
     </div>
   </div>
 </template>
@@ -36,6 +36,18 @@ export default {
       'sec': 0
     };
   },
+  created: function() {
+    setInterval(() => {
+      let seconds = this.hr * 60 * 60 + this.min * 60 + this.sec;
+      if (seconds == 0) return;
+      seconds -= 1;
+      this.hr = Math.floor(seconds/(60*60));
+      seconds -= this.hr * 60 * 60;
+      this.min = Math.floor(seconds/60);
+      seconds -= this.min * 60;
+      this.sec = seconds; 
+    }, 1000);
+  },
   methods: {
     toSetup() {
       this.showDefaultScreen = false;
@@ -63,6 +75,8 @@ export default {
     }
   }
 }
+
+
 </script>
 
 
@@ -112,6 +126,13 @@ img {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.time-label {
+    text-align: center;
+    margin-bottom: 4rem;
+    font-size: 1.2rem;
+    font-weight: 300;
 }
 
 </style>
