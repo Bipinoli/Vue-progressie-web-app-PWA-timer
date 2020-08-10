@@ -28,12 +28,15 @@ export default {
     watch: {
         hr: function() {
             this.adjustDisplayTime();
+            this.checkTimeUp();
         },
         min: function() {
             this.adjustDisplayTime();
+            this.checkTimeUp();
         },
         sec: function() {
             this.adjustDisplayTime();
+            this.checkTimeUp();
         }
     },
     created: function() {
@@ -55,6 +58,11 @@ export default {
                 this.loLabel = 'sec';
             }
         },
+        checkTimeUp() {
+            let seconds = this.hr * 60 * 60 + this.min * 60 + this.sec;
+            if (seconds == 0)
+                this.$emit('time-up');
+        }
     }
 }
 

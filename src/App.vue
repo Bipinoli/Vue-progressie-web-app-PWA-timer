@@ -3,8 +3,8 @@
     <div class="main">
       <Default v-if="showDefaultScreen" @to-setup="toSetup"></Default>
       <CountdownSetup v-if="showSetupScreen" @to-running="toRunning"></CountdownSetup>
-      <CountdownRunning v-if="showRunningScreen" @to-pause="toPause" :hr="hr" :min="min" :sec="sec"></CountdownRunning>
-      <CountdownPaused v-if="showPauseScreen" @to-stop="toDefault" @to-resume="toResume"></CountdownPaused>
+      <CountdownRunning v-if="showRunningScreen" @to-pause="toPause" @time-up="timeUp" :hr="hr" :min="min" :sec="sec"></CountdownRunning>
+      <CountdownPaused v-if="showPauseScreen" @to-stop="toDefault" @to-resume="toResume" :hr="hr" :min="min" :sec="sec"></CountdownPaused>
     </div>
   </div>
 </template>
@@ -33,11 +33,14 @@ export default {
 
       'hr': 0,
       'min': 0,
-      'sec': 0
+      'sec': 0,
+
+      'paused': false,
     };
   },
   created: function() {
     setInterval(() => {
+      if (this.paused) return;
       let seconds = this.hr * 60 * 60 + this.min * 60 + this.sec;
       if (seconds == 0) return;
       seconds -= 1;
@@ -49,6 +52,11 @@ export default {
     }, 1000);
   },
   methods: {
+    timeUp() {
+      this.showRunningScreen = false;
+      this.toDefault();
+      alert("time up!!");
+    },
     toSetup() {
       this.showDefaultScreen = false;
       this.showSetupScreen = true;
@@ -64,14 +72,20 @@ export default {
     toPause() {
       this.showRunningScreen = false;
       this.showPauseScreen = true;
+      this.paused = true;
     },
     toResume() {
       this.showPauseScreen = false;
       this.showRunningScreen = true;
+      this.paused = false;
     },
     toDefault() {
       this.showPauseScreen = false;
       this.showDefaultScreen = true;
+      this.paused = false;
+      this.hr = 0;
+      this.min = 0;
+      this.sec = 0;
     }
   }
 }
